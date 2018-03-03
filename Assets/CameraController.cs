@@ -5,14 +5,14 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
 	public float  cameraSpeed;
 	PlayerController thePlayer;
-	float offsetZ, offsetX, myHeight;
+	float offsetZ, offsetX;
 
 	// Use this for initialization
 	void Start () {
 		thePlayer = FindObjectOfType<PlayerController>();
 		offsetZ = transform.position.z;
 		offsetX = transform.position.x;
-		myHeight = transform.position.y;
+//		myHeight = transform.position.y;
 	}
 	
 	// Update is called once per frame

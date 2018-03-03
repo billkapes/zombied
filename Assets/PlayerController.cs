@@ -13,7 +13,6 @@ public class PlayerController : MonoBehaviour {
 	Vector3 temp;
 	bool shoot, alive, goLeft, goRight;
 	RaycastHit hit;
-	Collider myCollider;
 	ParticleSystem bulletParticle;
 	AudioSource myAudioSource;
 	[SerializeField]
@@ -44,10 +43,9 @@ public class PlayerController : MonoBehaviour {
 			return;
 		}
 		alive = true;
-		myCollider = GetComponent<Collider>();
 		myRB = GetComponent<Rigidbody>();
 		myRB.velocity = new Vector3(0f, 0f, travelSpeed);	
-		ammoCount = 5;
+		ammoCount = 50;
 		score = 0;
 		ammoText.text = "ammo: " + ammoCount;
 		scoreText.text = "score: " + score;
@@ -180,6 +178,7 @@ public class PlayerController : MonoBehaviour {
 		if (other.gameObject.tag == "Enemy") {
 			myAudioSource.PlayOneShot(wilhelmClip);
 			alive = false;
+			myRB.constraints = RigidbodyConstraints.None;
 			myRB.AddForce(new Vector3(Random.Range(-10f, 10f), 175f, 10f));
 			myRB.AddTorque(40f, Random.Range(-20f, 20f), 0f);
 			//myCollider.enabled = false;

@@ -6,8 +6,8 @@ public class EnemySpawner : MonoBehaviour {
 	public GameObject enemy, obstacle, ammo;
 	PlayerController thePlayer;
 	int enemyCount, maxRange, centerRange;
-	float enemyTimer, ammoTimer, platformZRange;
-	public float enemySpawnTime, ammoSpawnTime;
+	float enemyTimer, ammoTimer, obstacleTimer;
+	public float enemySpawnTime, ammoSpawnTime, obstacleSpawnTime;
 
 
 	// Use this for initialization
@@ -15,22 +15,22 @@ public class EnemySpawner : MonoBehaviour {
 		thePlayer = FindObjectOfType<PlayerController>();
 		enemyTimer = enemySpawnTime;
 		ammoTimer = ammoSpawnTime;
+		obstacleTimer = obstacleSpawnTime;
 		enemyCount = 1;
 		centerRange = 8;
 		maxRange = 1;
-		platformZRange = 0f;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		enemyTimer -= Time.deltaTime;
 		ammoTimer -= Time.deltaTime;
+		obstacleTimer -= Time.deltaTime;
 
 		if (enemyTimer < 0f) {
 			StartCoroutine(SpawnEnemyCluster());
 			enemyTimer = enemySpawnTime;
-
-
 		
 		}
 
@@ -38,6 +38,11 @@ public class EnemySpawner : MonoBehaviour {
 			Instantiate(ammo, new Vector3(Random.Range(-10f, 10f), 0.5f, thePlayer.transform.position.z + 50f), Quaternion.Euler(0f, Random.Range(0, 360), 0f));
 			//ammoTimer = Random.Range(ammoSpawnTime - 2f, ammoSpawnTime + 2f);
 			ammoTimer = ammoSpawnTime;
+		}
+
+		if (obstacleTimer < 0f) {
+			Instantiate(obstacle, new Vector3(Random.Range(-10f, 10f), 0.5f, thePlayer.transform.position.z + 90f), Quaternion.Euler(0f, Random.Range(0, 360), 0f));
+			obstacleTimer = obstacleSpawnTime - Random.Range(0f, 5f);
 		}
 	}
 
@@ -55,7 +60,7 @@ public class EnemySpawner : MonoBehaviour {
 			Vector3 pos = new Vector3(
 										Random.Range(Xcenter - Mathf.Min(maxRange, 8), Xcenter + Mathf.Min(maxRange++, 8)),
 									  	1f,
-									  	thePlayer.transform.position.z + 50f + Random.Range(-5f, 5f) 
+									  	thePlayer.transform.position.z + 75f + Random.Range(-5f, 5f) 
 									 );
 
 			Instantiate(enemy, pos, Quaternion.identity);

@@ -9,11 +9,13 @@ public class EnemyMovement : MonoBehaviour {
 	Rigidbody myRB;
 	Animator anim;
 	AudioSource myAS;
+	BoxCollider myBC;
 
 	void Awake() {
 		myRB = GetComponent<Rigidbody>();
 		anim = GetComponent<Animator>();
 		myAS = GetComponent<AudioSource>();
+		myBC = GetComponent<BoxCollider>();
 	}
 
 	// Use this for initialization
@@ -23,12 +25,21 @@ public class EnemyMovement : MonoBehaviour {
 
 	public void StartMove() {
 		thePlayer = FindObjectOfType<PlayerController>();	
-		speed = Random.Range(0.001f, 0.01f);
 
 		dir = (thePlayer.transform.position - transform.position).normalized;
-		speed = Random.Range(1f, 20f);
+		speed = Random.Range(1f, 5f);
 		myRB.velocity = dir * speed;
-		myRB.velocity = new Vector3(dir.x * speed, 0f, 0f);
+		//myRB.velocity = new Vector3(dir.x * speed, 0f, 0f);
+		Invoke("ContinueMove", Random.Range(1f, 10f));
+		Debug.Log("" + dir);
+	}
+
+	void ContinueMove() {
+		dir = (thePlayer.transform.position - transform.position).normalized;
+		speed = Random.Range(1f, 5f);
+		myRB.velocity = dir * speed;
+		Invoke("ContinueMove", Random.Range(1f, 10f));
+		Debug.Log("" + dir);
 	}
 	
 	// Update is called once per frame
@@ -43,16 +54,23 @@ public class EnemyMovement : MonoBehaviour {
 
 	void OnParticleCollision(GameObject other) {
 		if (other.gameObject.tag == "Bullet") {
-			GotHit();
+			StartCoroutine(GotHit());
 		}
 	}
 
-	void GotHit() {
+	IEnumerator GotHit() {
 		FindObjectOfType<PlayerController>().IncreaseScore();
 		myAS.PlayScheduled(0.3);
-		myRB.AddForce(new Vector3(Random.Range(-350f, 350f), 150f, 10f));
-		myRB.AddTorque(15f, Random.Range(-20f, 20f), 0f);
-		this.gameObject.GetComponent<BoxCollider>().enabled = false;
+		myRB.constraints = RigidbodyConstraints.None;
+		myRB.AddForce(new Vector3(Random.Range(-150f, 150f), 500f, 200f));
+		myRB.AddTorque(100f, Random.Range(-100f, 100f), 50f);
 		anim.StopPlayback();
+		myBC.enabled = false;
+		yield return new WaitForSeconds(2f);
+//		myRB.velocity = Vector3.zero;
+//		myRB.angularVelocity = Vector3.zero;
+//		yield return new WaitForSeconds(0.7f);
+//		myRB.AddForce(Vector3.up * -100f);
+
 	}
 }
